@@ -1,10 +1,10 @@
-#include<iostream>            //基本的输入输出流函数包含在此
+#include<stdio.h>            //基本的输入输出流函数包含在此
 #include<fstream>             //基本的输入输出文件流包含在此                                                                                                                                                                                             j
 #include<conio.h>             //getch()及getche()函数包含在此
-#include<cstring>              //相关字符串函数包含在此
-using namespace std;
+#include<string.h>              //相关字符串函数包含在此
 
-  /*************************各函数的声明**************************/
+
+ /*************************各函数的声明**************************/
 
 struct zggz*read();                //从数据文件中读取职工工资数据
 void write(struct zggz*first);     //写入职工工资记录
@@ -20,14 +20,14 @@ struct zggz                        //声明职工工资数据结构体
 	struct zggz*front;
 	struct zggz*behind;
 	char  gonghao[10];    //职工工号
-	char  name[10];   //职工姓名
-	float gwgz;        //岗位工资
-	float xjgz;        //薪级工资
-	float zwjt;        //职务津贴
-	float jxgz;        //绩效工资
-	float yfgz;        //应发工资
-	float grsds;       //个人所得税
-	float sfgz;        //实发工资
+	char  name[10];       //职工姓名
+	float gwgz;           //岗位工资
+	float xjgz;           //薪级工资
+	float zwjt;           //职务津贴
+	float jxgz;           //绩效工资
+	float yfgz;           //应发工资
+	float grsds;          //个人所得税
+	float sfgz;           //实发工资
 
 };
 
@@ -38,16 +38,19 @@ void main()
 	first=read();         //从数据文件中读取职工工资数据并初始化职工工资结构体数组，即取得结构体数组的首地址
 	while(true)
 	{
-		cout<<"请选择（1-7）"<<endl;
-		cout<<endl;
-		cout<<"1.查询职工工资记录"<<endl;
-		cout<<"2.修改职工工资记录"<<endl;
-		cout<<"3.添加职工工资记录"<<endl;
-		cout<<"4.删除职工工资记录"<<endl;
-		cout<<"5.保存职工工资记录"<<endl;
-		cout<<"6.浏览职工工资记录"<<endl;
-		cout<<"退出系统"<<endl;
-		cout<<"您的选择是："<<endl;
+		system("cls");
+		printf("###欢迎使用广西民族大学软件与信息安全学院职工工资管理系统###\n\n");
+		printf("请选择（1-7）:\n");
+		printf("=================================================================\n");
+		printf("|\t\t\t1.查询职工工资记录\t\t\t|\n");
+		printf("|\t\t\t2.修改职工工资记录\t\t\t|\n");
+		printf("|\t\t\t3.添加职工工资记录\t\t\t|\n");
+		printf("|\t\t\t4.删除职工工资记录\t\t\t|\n");
+		printf("|\t\t\t5.保存职工工资记录\t\t\t|\n");
+		printf("|\t\t\t6.浏览职工工资记录\t\t\t|\n");
+		printf("|\t\t\t7.退出系统\t\t\t\t|\n");
+		printf("=================================================================\n\n");
+		printf("您的选择是：\n\n");
 		ch=getche();
 
 		switch(ch)
@@ -80,7 +83,7 @@ void main()
 				return;                //退出
 
 			default:
-				cout<<"请按任意键返回重新选择（1-7）"<<endl;
+				printf("请按任意键返回重新选择（1-7）\n");
 			getch();
 		
 		}
@@ -95,23 +98,22 @@ void main()
 struct zggz*read()
 {
 	FILE*file;                                //声明文件指针
-	int n=0;                               //声明记录职工记录数的变量
-	struct zggz*first,*readdate;            //记录首地址及新分配内存地址
-	struct zggz*p ;                         //中间变量                      
-	ifstream in("gz.dat",ios::binary);     //定义输入文件流对象in，打开二进制输入文件gz.dat
-	if(!in)                                //如果文件打开失败，in返回0值
+	int n=0;                                  //声明记录职工记录数的变量
+	struct zggz*first,*readdate;              //记录首地址及新分配内存地址
+	struct zggz*p ;                           //中间变量                      
+    if((file=fopen("gz.dat","rb"))==NULL)     //以二进制方式打开职工工资数据文件并进行判断是否失败                             
 	{
-		cout<<"职工工资数据文件打开失败，或为空"<<endl;
-		cout<<"按任意键返回主菜单"<<endl;
+		printf("职工工资数据文件打开失败，或为空\n");
+		printf("按任意键返回主菜单\n");
 		getch();
 		return 0;
 	}
-	else                                  //文件打开成功时
+	else                                      //文件打开成功时
 	{
 		readdate=(struct zggz*)malloc(sizeof(struct zggz));        //动态申请分配内存空间，并获得内存分配首地址
 		while(fread(readdate,sizeof(struct zggz),1,file)==1)
 		{
-			if(n==0)                      //建立链表起始项
+			if(n==0)                          //建立链表起始项
 			{
 				first=readdate;
 				first->front=NULL;
@@ -119,7 +121,7 @@ struct zggz*read()
 				p=readdate;
 			
 			}
-			else                          //说明追加链表数据项
+			else                              //说明追加链表数据项
 			{
 				p->behind=readdate;
 				readdate->front=p;
@@ -128,16 +130,16 @@ struct zggz*read()
 			
 			}
 		
-		  n++;                             //职工人数增加1
+		  n++;                                 //职工人数增加1
 		  readdate=(struct zggz*)malloc(sizeof(struct zggz));
 		
 		}
 
-		fclose(file);                        //关闭文件指针
-		cout<<"职工工资数据读取完毕，共有："<<n<<"人"<<endl;
+		fclose(file);                          //关闭文件指针
+		printf("职工工资数据读取完毕，共有：%d人！\n",n);
 	}
 
-		cout<<"按任意键进入主菜单"<<endl;
+		printf("按任意键进入主菜单\n");
 		getch();
 		return first;
 		
@@ -152,7 +154,7 @@ void write(struct zggz*first)
 	int n=0;                               //统计存入文件职工人数
 	if(first==NULL)                        //内存中无工资记录
 	{
-		cout<<"没有数据可存！按任意键返回主菜单"<<endl;
+		printf("没有数据可存！按任意键返回主菜单\n");
 		getch();
 		return;
 	
@@ -168,11 +170,11 @@ void write(struct zggz*first)
 		
 		}while(first!=NULL);
 		fclose(file);                      //关闭文件指针
-		cout<<n<<"条职工记录保存完毕"<<endl;
+		printf("%d条职工记录保存完毕\n");
 	
 	}
 	else                                   //文件打开不成功时
-		cout<<"无法打开职工工资数据文件"<<endl;
+		printf("无法打开职工工资数据文件\n");
 	getch();
 
 }
@@ -183,16 +185,16 @@ void find(struct zggz*first)
 {
 
 	char gonghao[10];                      //接收职工工号字符数组
-	if(first==NULL)                        //说 明内存无工资记录
+	if(first==NULL)                        //说明内存无工资记录
 	{
 		
-		cout<<"当前还没有职工工资记录！按任意键返回主菜单";
+		printf("当前还没有职工工资记录！按任意键返回主菜单");
 		getch();
 		return;
 
 	}
 	
-	cout<<"请输入职工工号："<<endl;        //提示信息
+	printf("请输入职工工号：\n");        //提示信息
 	gets(gonghao);                         //从键盘读取字符串
   
 	while(first!=NULL)                     //从链表开始向后查找
@@ -200,11 +202,15 @@ void find(struct zggz*first)
 		if(strcmp(first->gonghao,gonghao)==0)    //比较并找到
 		{
 			/*********显示该职工工资情况************/
-			cout<<"该职工工资情况如下："<<endl;
-			cout<<"工号\t姓名\t岗位工资\t薪级工资\t职务津贴\t绩效工资\t应发工资\t个人所得税\t实发工资"<<endl;
-			cout<<first->gonghao<<'\t'<<first->name<<'\t'<<first->gwgz<<'\t'<<first->xjgz<<'\t'<<first->zwjt<<'\t';
-			cout<<first->jxgz<<'\t'<<first->yfgz<<'\t'<<first->grsds<<'\t'<<first->sfgz<<endl;
-			cout<<"按任意键返回主菜单";
+			printf("该职工工资情况如下：\n");
+			printf("======================================================================\n\n");
+			printf("%-6s%-6s%-9s%-9s%-9s%","工号","姓名","岗位工资","薪级工资","职务津贴");
+			printf("%-9s%-9s%8s%9s%\n","绩效工资","应发工资","个人所得税","实发工资");
+			printf("%-6s%-6s%8.2f%",first->gonghao,first->name,first->gwgz);
+			printf("%9.2f%9.2f%",first->xjgz,first->zwjt);
+			printf("%9.2f%9.2f%",first->jxgz,first->yfgz);
+			printf("%9.2f%9.2f%\n",first->grsds,first->sfgz);
+			printf("按任意键返回主菜单");
 			getch();
 			return;
 
@@ -214,7 +220,7 @@ void find(struct zggz*first)
 	}
 
 	//循环自动结束意味着未找到
-	cout<<"您所输入的职工工号有误或不存在！按任意键返回主菜单"<<endl;
+	printf("您所输入的职工工号有误或不存在！按任意键返回主菜单\n");
 	getch();
 	return;
 
@@ -226,22 +232,26 @@ void find(struct zggz*first)
 void list(struct zggz*first)
 {
 	system("cls");                       //清屏命令
-	cout<<"全体职工工资情况如下："<<endl;
-	cout<<endl;
+	printf("全体职工工资情况如下：\n");
+	printf("==============================================\n\n");
 	if(first!=NULL)                      //说明内存中链表存在
 	{
 		do
 		{
-			cout<<"工号\t姓名\t岗位工资\t薪级工资\t职务津贴\t绩效工资\t应发工资\t个人所得税\t实发工资"<<endl;
-			cout<<first->gonghao<<'\t'<<first->name<<'\t'<<first->gwgz<<'\t'<<first->xjgz<<'\t'<<first->zwjt<<'\t';
-			cout<<first->jxgz<<'\t'<<first->yfgz<<'\t'<<first->grsds<<'\t'<<first->sfgz<<endl;
+			printf("%-6s%-6s%-9s%-9s%-9s%","工号","姓名","岗位工资","薪级工资","职务津贴");
+			printf("%-9s%-9s%8s%9s%\n","绩效工资","应发工资","个人所得税","实发工资");
+			printf("%-6s%-6s%8.2f%",first->gonghao,first->name,first->gwgz);
+			printf("%9.2f%9.2f%",first->xjgz,first->zwjt);
+			printf("%9.2f%9.2f%",first->jxgz,first->yfgz);
+			printf("%9.2f%9.2f%\n",first->grsds,first->sfgz);
+
 			first=first->behind;         //修正first指向链表中下一项结构数据
 		
 		}while(first!=NULL);             //不为空说明结构数据存在
 	
 	}
 
-	cout<<"按任意键返回主菜单"<<endl;
+	printf("按任意键返回主菜单\n");
 	getch();
 	return;
 
@@ -254,30 +264,33 @@ void modify(struct zggz*first)
 	char gonghao[10];                   //接收职工工号字符数组
 	if(first==NULL)                     //说明内存无工资记录
 	{
-		cout<<"当前没有职工工资记录！按任意键返回主菜单"<<endl;
+		printf("当前没有职工工资记录！按任意键返回主菜单\n");
 		getch();
 		return;
 	}
 
-	cout<<"请输入职工工号："<<endl;      //提示信息
+	printf("请输入职工工号：\n");      //提示信息
 	gets(gonghao);                       //从键盘读取字符串
 	while(first!=NULL)                   //从链表开始向后查找
 	{
 			if(strcmp(first->gonghao,gonghao)==0)    //比较并找到
 		{
 			/*********显示该职工工资情况************/
-			cout<<"该职工工资情况如下："<<endl;
-			cout<<"工号\t姓名\t岗位工资\t薪级工资\t职务津贴\t绩效工资\t应发工资\t个人所得税\t实发工资"<<endl;
-			cout<<first->gonghao<<'\t'<<first->name<<'\t'<<first->gwgz<<'\t'<<first->xjgz<<'\t'<<first->zwjt<<'\t';
-			cout<<first->jxgz<<'\t'<<first->yfgz<<'\t'<<first->grsds<<'\t'<<first->sfgz<<endl;
-
+			printf("该职工工资情况如下：\n");
+			printf("================================\n\n");
+			printf("%-6s%-6s%-9s%-9s%-9s%","工号","姓名","岗位工资","薪级工资","职务津贴");
+			printf("%-9s%-9s%8s%9s%\n","绩效工资","应发工资","个人所得税","实发工资");
+			printf("%-6s%-6s%8.2f%",first->gonghao,first->name,first->gwgz);
+			printf("%9.2f%9.2f%",first->xjgz,first->zwjt);
+			printf("%9.2f%9.2f%",first->jxgz,first->yfgz);
+			printf("%9.2f%9.2f%\n",first->grsds,first->sfgz);
 			/**********接收该职员新的工资数据***********/
-			cout<<"请输入该职员新的岗位工资：";
-			cin>>first->gwgz;
-			cout<<"请输入该职员新的薪级工资：";
-			cin>>first->xjgz;
-			cout<<"请输入该职员新的绩效工资：";
-			cin>>first->jxgz;
+			printf("请输入该职员新的岗位工资：");
+			scanf("%f",&first->gwgz);
+			printf("请输入该职员新的薪级工资：");
+			scanf("%f",&first->xjgz);
+			printf("请输入该职员新的绩效工资：");
+			scanf("%f",&first->jxgz);
 
 			/*********计算应发工资，个人所得税，实发工资***********/
 			first->yfgz=(first->gwgz)+(first->xjgz)+(first->zwjt)+(first->jxgz);
@@ -285,10 +298,13 @@ void modify(struct zggz*first)
 			first->sfgz=(first->yfgz)-(first->grsds);
 
 			/**********显示计算结果***********/
-			cout<<"该职工的应发工资为："<<first->yfgz<<endl;
-			cout<<"该职工的个人所得税为："<<first->grsds<<endl;
-			cout<<"该职工的实发工资为："<<first->sfgz<<endl;
-			cout<<"该职工工资数据修改成功！按任意键返回主菜单"<<endl;
+			printf("该职工的应发工资为：%f",first->yfgz);
+			printf("\n");
+			printf("该职工的个人所得税为：%f",first->grsds);
+			printf("\n");
+			printf("该职工的实发工资为：%f",first->sfgz);
+			printf("\n");
+			printf("该职工工资数据修改成功！按任意键返回主菜单\n\n");
 			getch();
 			return;
 			
@@ -297,7 +313,7 @@ void modify(struct zggz*first)
 	}
 
 	//循环自动结束意味着未找到
-	cout<<"您所输入的职工工号有误或不存在！按任意键返回主菜单"<<endl;
+	printf("您所输入的职工工号有误或不存在！按任意键返回主菜单\n");
 	getch();
 	return;
 
@@ -330,31 +346,34 @@ struct zggz*add(struct zggz*first)
 		adddate->behind=NULL;
 	}
 	//无论是创建第一条还是追加工资记录，均只对adddate添加数据
-		cout<<"请输入职工工号：";
+		printf("请输入职工工号：");
 		fflush(stdin);                 //清楚键盘缓冲区
 		gets(adddate->gonghao);
-		cout<<"请输入职工姓名：";      
+		printf("请输入职工姓名：");      
 		fflush(stdin);                 //清楚键盘缓冲区 
 		gets(adddate->name);
-		cout<<"请输入该职工新的岗位工资：";
-		cin>>adddate->gwgz;
-		cout<<"请输入该职工新的薪级工资：";
-		cin>>adddate->xjgz;
-		cout<<"请输入该职工新的职务津贴：";
-		cin>>adddate->zwjt;
-		cout<<"请输入该职工新的绩效工资：";
-		cin>>adddate->jxgz;
+		printf("请输入该职工新的岗位工资：");
+		scanf("%f",&adddate->gwgz);
+		printf("请输入该职工新的薪级工资：");
+		scanf("%f",&adddate->xjgz);
+		printf("请输入该职工新的职务津贴：");
+		scanf("%f",&adddate->zwjt);
+		printf("请输入该职工新的绩效工资：");
+		scanf("%f",&adddate->jxgz);
 
 	 /*********计算应发工资，个人所得税，实发工资***********/
-		first->yfgz=(first->gwgz)+(first->xjgz)+(first->zwjt)+(first->jxgz);
-		first->grsds=grsds(first->yfgz);
-		first->sfgz=(first->yfgz)-(first->grsds);
+		adddate->yfgz=(adddate->gwgz)+(adddate->xjgz)+(adddate->zwjt)+(adddate->jxgz);
+		adddate->grsds=grsds(adddate->yfgz);
+		adddate->sfgz=(adddate->yfgz)-(adddate->grsds);
 
 	 /**********输出以上计算结果***********/
-		cout<<"该职工的应发工资为："<<first->yfgz<<endl;
-		cout<<"该职工的个人所得税为："<<first->grsds<<endl;
-		cout<<"该职工的实发工资为："<<first->sfgz<<endl;
-		cout<<"按任意键返回主菜单"<<endl;
+		printf("该职工的应发工资为：%f",adddate->yfgz);
+		printf("\n");
+		printf("该职工的个人所得税为：%f",adddate->grsds);
+		printf("\n");
+		printf("该职工的实发工资为：%f",adddate->sfgz);
+		printf("\n");
+		printf("按任意键返回主菜单\n\n");
 		getch();
 		return first;                //返回链表首地址
 
@@ -370,24 +389,28 @@ struct zggz*del(struct zggz*first)
 	p=first;
 	if(p==NULL)                       //说明内存无工资记录
 	{
-		cout<<"当前还没有职工工资记录，无法执行删除！"<<endl;
-		cout<<"按任意键返回主菜单"<<endl;
+		printf("当前还没有职工工资记录，无法执行删除！\n");
+		printf("按任意键返回主菜单\n");
 		getch();
 		return first;
 	
 	}
-	cout<<"请输入待删除职工工号：";
+	printf("请输入待删除职工工号：");
 	gets(gonghao);
 	while(p!=NULL)                    //从链表开始处进行查找
 	{
 		if(strcmp(first->gonghao,gonghao)==0)      //比较并找到
 		{
 			/*********显示该职工工资情况************/
-			cout<<"该职工工资情况如下："<<endl;
-			cout<<"工号\t姓名\t岗位工资\t薪级工资\t职务津贴\t绩效工资\t应发工资\t个人所得税\t实发工资"<<endl;
-			cout<<first->gonghao<<'\t'<<first->name<<'\t'<<first->gwgz<<'\t'<<first->xjgz<<'\t'<<first->zwjt<<'\t';
-			cout<<first->jxgz<<'\t'<<first->yfgz<<'\t'<<first->grsds<<'\t'<<first->sfgz<<endl;
-			cout<<"你确定要删除该职工工资信息吗"<<endl;
+			printf("该职工工资情况如下：\n");
+			printf("================================\n\n");
+			printf("%-6s%-6s%-9s%-9s%-9s%","工号","姓名","岗位工资","薪级工资","职务津贴");
+			printf("%-9s%-9s%8s%9s%\n","绩效工资","应发工资","个人所得税","实发工资");
+			printf("%-6s%-6s%8.2f%",p->gonghao,p->name,p->gwgz);
+			printf("%9.2f%9.2f%",p->xjgz,p->zwjt);
+			printf("%9.2f%9.2f%",p->jxgz,p->yfgz);
+			printf("%9.2f%9.2f%\n",p->grsds,p->sfgz);
+			printf("你确定要删除%s号职工工资信息吗？",p->gonghao);
 			d=getch();
 			if(d=='y'||d=='Y')                     //确认删除
 			{
@@ -414,7 +437,7 @@ struct zggz*del(struct zggz*first)
 				
 				}
 				free(p);                           //释放被删除数据所占内存
-				cout<<"该职工记录成功被删除，按任意键返回主菜单"<<endl;
+				printf("该职工记录成功被删除，按任意键返回主菜单\n");
 				getch();
 				return first;                      //返回工资链表起始地址
 
@@ -422,7 +445,7 @@ struct zggz*del(struct zggz*first)
 			else                //未确认删除记录
 			{
 			
-			cout<<"你选择了不删除该职工记录，按任意键返回主菜单"<<endl;
+			printf("你选择了不删除该职工记录，按任意键返回主菜单\n");
 			getch();
 			return first;
 			
@@ -434,7 +457,7 @@ struct zggz*del(struct zggz*first)
 
 	if(d=='n'||d=='N')             //该值反映未删除过记录的状态
 	{
-		cout<<"本单位无此工号，按任意键返回主菜单"<<endl;
+		printf("本单位无此工号，按任意键返回主菜单\n");
 		getch();
 		return first;
 	

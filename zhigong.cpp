@@ -34,7 +34,7 @@ struct zggz                        //声明职工工资数据结构体
 void main()
 {	
 	char ch;
-	struct zggz*first;    //声明指向结构体的指针变量，记录链表的首地址
+	struct zggz*first=NULL;    //声明指向结构体的指针变量，记录链表的首地址
 	first=read();         //从数据文件中读取职工工资数据并初始化职工工资结构体数组，即取得结构体数组的首地址
 	while(true)
 	{
@@ -99,7 +99,7 @@ struct zggz*read()
 {
 	FILE*file;                                //声明文件指针
 	int n=0;                                  //声明记录职工记录数的变量
-	struct zggz*first,*readdate;              //记录首地址及新分配内存地址
+	struct zggz*first=NULL,*readdate;              //记录首地址及新分配内存地址
 	struct zggz*p ;                           //中间变量                      
     if((file=fopen("gz.dat","rb"))==NULL)     //以二进制方式打开职工工资数据文件并进行判断是否失败                             
 	{
@@ -170,11 +170,11 @@ void write(struct zggz*first)
 		
 		}while(first!=NULL);
 		fclose(file);                      //关闭文件指针
-		printf("%d条职工记录保存完毕\n");
+		printf("\%d条职工记录保存完毕!\n",n);
 	
 	}
 	else                                   //文件打开不成功时
-		printf("无法打开职工工资数据文件\n");
+		printf("无法打开职工工资数据文件!\n");
 	getch();
 
 }
@@ -194,13 +194,14 @@ void find(struct zggz*first)
 
 	}
 	
-	printf("请输入职工工号：\n");        //提示信息
-	gets(gonghao);                         //从键盘读取字符串
+	printf("\n请输入职工工号：\n");                //提示信息
+	gets(gonghao);                               //从键盘读取字符串
   
-	while(first!=NULL)                     //从链表开始向后查找
+	while(first!=NULL)                           //从链表开始向后查找
 	{
 		if(strcmp(first->gonghao,gonghao)==0)    //比较并找到
 		{
+
 			/*********显示该职工工资情况************/
 			printf("该职工工资情况如下：\n");
 			printf("======================================================================\n\n");
@@ -236,10 +237,10 @@ void list(struct zggz*first)
 	printf("==============================================\n\n");
 	if(first!=NULL)                      //说明内存中链表存在
 	{
+		printf("%-6s%-6s%-9s%-9s%-9s%","工号","姓名","岗位工资","薪级工资","职务津贴");
+		printf("%-9s%-9s%8s%9s%\n","绩效工资","应发工资","个人所得税","实发工资");
 		do
 		{
-			printf("%-6s%-6s%-9s%-9s%-9s%","工号","姓名","岗位工资","薪级工资","职务津贴");
-			printf("%-9s%-9s%8s%9s%\n","绩效工资","应发工资","个人所得税","实发工资");
 			printf("%-6s%-6s%8.2f%",first->gonghao,first->name,first->gwgz);
 			printf("%9.2f%9.2f%",first->xjgz,first->zwjt);
 			printf("%9.2f%9.2f%",first->jxgz,first->yfgz);
@@ -269,11 +270,12 @@ void modify(struct zggz*first)
 		return;
 	}
 
-	printf("请输入职工工号：\n");      //提示信息
+	printf("请输入职工工号：\n");        //提示信息
 	gets(gonghao);                       //从键盘读取字符串
 	while(first!=NULL)                   //从链表开始向后查找
 	{
 			if(strcmp(first->gonghao,gonghao)==0)    //比较并找到
+
 		{
 			/*********显示该职工工资情况************/
 			printf("该职工工资情况如下：\n");
@@ -284,6 +286,7 @@ void modify(struct zggz*first)
 			printf("%9.2f%9.2f%",first->xjgz,first->zwjt);
 			printf("%9.2f%9.2f%",first->jxgz,first->yfgz);
 			printf("%9.2f%9.2f%\n",first->grsds,first->sfgz);
+
 			/**********接收该职员新的工资数据***********/
 			printf("请输入该职员新的岗位工资：");
 			scanf("%f",&first->gwgz);
@@ -340,6 +343,7 @@ struct zggz*add(struct zggz*first)
 		{
 			p=p->behind ;
 		}
+
 	//建立链表追加项指针指向关系
 		p->behind=adddate;
 		adddate->front=p;
@@ -361,10 +365,12 @@ struct zggz*add(struct zggz*first)
 		printf("请输入该职工新的绩效工资：");
 		scanf("%f",&adddate->jxgz);
 
+
 	 /*********计算应发工资，个人所得税，实发工资***********/
 		adddate->yfgz=(adddate->gwgz)+(adddate->xjgz)+(adddate->zwjt)+(adddate->jxgz);
 		adddate->grsds=grsds(adddate->yfgz);
 		adddate->sfgz=(adddate->yfgz)-(adddate->grsds);
+
 
 	 /**********输出以上计算结果***********/
 		printf("该职工的应发工资为：%f",adddate->yfgz);
@@ -375,9 +381,10 @@ struct zggz*add(struct zggz*first)
 		printf("\n");
 		printf("按任意键返回主菜单\n\n");
 		getch();
-		return first;                //返回链表首地址
+		return first;                 //返回链表首地址
 
 }
+
 
 /**********从职工工资数据文件删除记录***********/
 
@@ -397,9 +404,9 @@ struct zggz*del(struct zggz*first)
 	}
 	printf("请输入待删除职工工号：");
 	gets(gonghao);
-	while(p!=NULL)                    //从链表开始处进行查找
+	while(p!=NULL)                     //从链表开始处进行查找
 	{
-		if(strcmp(first->gonghao,gonghao)==0)      //比较并找到
+		if(strcmp(p->gonghao,gonghao)==0)          //比较并找到
 		{
 			/*********显示该职工工资情况************/
 			printf("该职工工资情况如下：\n");
@@ -410,39 +417,40 @@ struct zggz*del(struct zggz*first)
 			printf("%9.2f%9.2f%",p->xjgz,p->zwjt);
 			printf("%9.2f%9.2f%",p->jxgz,p->yfgz);
 			printf("%9.2f%9.2f%\n",p->grsds,p->sfgz);
-			printf("你确定要删除%s号职工工资信息吗？",p->gonghao);
+			printf("\n你确定要删除%s号职工工资信息吗？(y/n)",p->gonghao);
 			d=getch();
-			if(d=='y'||d=='Y')                     //确认删除
+			if(d=='y'||d=='Y')                         //确认删除
 			{
+
 				//以下代码实现重建链表关系
 				if(p->front==NULL&&p->behind==NULL)   //当只有一条记录时
 				{
 					first=NULL;
 				
 				}
-				else if(p->front==NULL)            //删除的是第一条记录
+				else if(p->front==NULL)              //删除的是第一条记录
 				{
 					first=p->behind;
 					first->front=NULL;
 				
 				}
-				else if(p->behind==NULL)           //删除的事最后一条记录
+				else if(p->behind==NULL)             //删除的是最后一条记录
 				{
 					(p->front)->behind=NULL;
 				}
-				else                               //删除非第一条记录
+				else                                 //删除非第一条记录
 				{
 					(p->front)->behind=p->behind;
 					(p->behind)->front=p->front;
 				
 				}
-				free(p);                           //释放被删除数据所占内存
+				free(p);                             //释放被删除数据所占内存
 				printf("该职工记录成功被删除，按任意键返回主菜单\n");
 				getch();
-				return first;                      //返回工资链表起始地址
+				return first;                        //返回工资链表起始地址
 
 			}
-			else                //未确认删除记录
+			else                    //不删除记录
 			{
 			
 			printf("你选择了不删除该职工记录，按任意键返回主菜单\n");
@@ -450,12 +458,14 @@ struct zggz*del(struct zggz*first)
 			return first;
 			
 			}
-
-			p=p->behind ;           //指向下一项结构数据
-
 		}
 
-	if(d=='n'||d=='N')             //该值反映未删除过记录的状态
+			p=p->behind ;           //指向下一项结构数据
+	
+	}
+	
+
+	if(d=='n'||d=='N')              //该值反映未删除过记录的状态
 	{
 		printf("本单位无此工号，按任意键返回主菜单\n");
 		getch();
@@ -464,7 +474,7 @@ struct zggz*del(struct zggz*first)
 	}
 }
 
-}
+
 
 /*********计算个人所得税*************/
 float grsds(float m)
